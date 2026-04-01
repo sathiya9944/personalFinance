@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { getTransactions, deleteTransaction } from '../services/api';
-import { Trash2, TrendingDown, TrendingUp, Inbox } from 'lucide-react';
+import { Trash2, TrendingDown, TrendingUp, Inbox, Edit2 } from 'lucide-react';
+import EditTransactionModal from './EditTransactionModal';
 
 export default function TransactionList() {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [editingTransaction, setEditingTransaction] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchData = async () => {
         setLoading(true);
@@ -23,6 +26,27 @@ export default function TransactionList() {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const handleEditClick = (transaction: any) => {
+        setEditingTransaction(transaction);
+        setIsModalOpen(true);
+    };
+
+    const handleEditComplete = () => {
+        fetchData();
+        setEditingTransaction(null);
+    };
+
+    const handleDeleteClick = async (id: number) => {
+        if (confirm('Are you sure you want to delete this transaction?')) {
+            try {
+                await deleteTransaction(id);
+                fetchData();
+            } catch (error) {
+                console.error('Failed to delete transaction:', error);
+            }
+        }
+    };
 
     if (loading && data.length === 0) {
         return (
@@ -48,53 +72,66 @@ export default function TransactionList() {
     }
 
     return (
-        <div className="space-y-3">
-            {data.map((t) => (
-                <div
-                    key={t.id}
-                    className="group flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:border-indigo-100 hover:bg-indigo-50/30 transition-all duration-200"
-                >
-                    <div className="flex items-center gap-4">
-                        <div className={`p-2.5 rounded-xl ${
-                            t.type === 'income' 
-                            ? 'bg-emerald-50 text-emerald-600' 
-                            : 'bg-rose-50 text-rose-600'
-                        }`}>
-                            {t.type === 'income' ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                        </div>
-                        
-                        <div>
-                            <p className="font-semibold text-gray-800">{t.title}</p>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full uppercase tracking-wider">
-                                    {t.category}
-                                </span>
+        <>
+            <div className="space-y-3">
+                {data.map((t) => (
+                    <div
+                        key={t.id}
+                        className="group flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:border-indigo-100 hover:bg-indigo-50/30 transition-all duration-200"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className={`p-2.5 rounded-xl ${
+                                t.type === 'income' 
+                                ? 'bg-emerald-50 text-emerald-600' 
+                                : 'bg-rose-50 text-rose-600'
+                            }`}>
+                                {t.type === 'income' ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
+                            </div>
+                            
+                            <div>
+                                <p className="font-semibold text-gray-800">{t.title}</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full uppercase tracking-wider">
+                                        {t.category}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="flex items-center gap-4">
-                        <p className={`font-bold text-lg ${
-                            t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'
-                        }`}>
-                            {t.type === 'income' ? '+' : '-'} ₹{Math.abs(t.amount).toLocaleString()}
-                        </p>
-                        
-                        <button
-                            onClick={async () => {
-                                if (confirm('Are you sure you want to delete this transaction?')) {
-                                    await deleteTransaction(t.id);
-                                    fetchData();
-                                }
-                            }}
-                            className="p-2 text-gray-300 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
-                            title="Delete transaction"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <p className={`font-bold text-lg ${
+                                t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'
+                            }`}>
+                                {t.type === 'income' ? '+' : '-'} ₹{Math.abs(t.amount).toLocaleString()}
+                            </p>
+                            
+                            <button
+                                onClick={() => handleEditClick(t)}
+                                className="p-2 rounded-lg"
+                                title="Edit transaction"
+                            >
+                                <Edit2 className="w-4 h-4 text-blue-500" />
+                            </button>
+
+                            <button
+                                onClick={() => handleDeleteClick(t.id)}
+                                className="p-2 rounded-lg"
+                                title="Delete transaction"
+                            >
+                                <Trash2 className="w-4 h-4 text-red-500" />
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ))}
-        </div>
+                ))}
+            </div>
+
+            {/* Edit Modal */}
+            <EditTransactionModal
+                isOpen={isModalOpen}
+                transaction={editingTransaction}
+                onClose={() => setIsModalOpen(false)}
+                onEditComplete={handleEditComplete}
+            />
+        </>
     );
 }

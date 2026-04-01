@@ -7,6 +7,8 @@ const API = axios.create({
 // Transaction endpoints
 export const getTransactions = () => API.get('/transactions');
 export const addTransaction = (data: any) => API.post('/transactions', data);
+export const updateTransaction = (id: number, data: any) =>
+    API.patch(`/transactions/${id}`, data);
 export const deleteTransaction = (id: number) =>
     API.delete(`/transactions/${id}`);
 
