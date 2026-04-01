@@ -14,3 +14,15 @@ model Transaction {
   category  String
   createdAt DateTime @default(now())
 }
+
+model Budget {
+  id       Int    @id @default(autoincrement())
+  category String
+  limit    Float
+  month    Int
+  year     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, month, year])
+}
