@@ -69,16 +69,16 @@ export default function TransactionForm({ refresh, editingTransaction, onEditCom
 
         // Validate title
         if (!form.title.trim()) {
-            newErrors.title = 'Title is required';
+            newErrors.title = 'Transaction Title is required';
         } else if (!TITLE_REGEX.test(form.title)) {
-            newErrors.title = 'Title must contain only English alphabets, spaces, hyphens, and apostrophes';
+            newErrors.title = 'Enter valid input';
         }
 
         // Validate category
         if (!form.category) {
             newErrors.category = 'Category is required';
         } else if (!CATEGORY_REGEX.test(form.category)) {
-            newErrors.category = 'Category must contain only English alphabets, spaces, and hyphens';
+            newErrors.category = 'Enter valid input';
         }
 
         // Validate amount
