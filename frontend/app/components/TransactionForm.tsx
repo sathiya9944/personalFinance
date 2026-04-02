@@ -17,7 +17,7 @@ const CATEGORIES = [
 ];
 
 const MAX_AMOUNT = 100000;
-const MIN_AMOUNT = 0.01;
+const MIN_AMOUNT = 1;
 
 // Regex for English alphabets, spaces, hyphens, and apostrophes
 const TITLE_REGEX = /^[a-zA-Z\s\-']+$/;
