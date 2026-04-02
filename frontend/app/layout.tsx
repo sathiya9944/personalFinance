@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ToastContainer from "./components/ui/Toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,6 +71,8 @@ export default function RootLayout({
             © 2026 Personal Finance Tracker. Manage your finances smartly.
           </div>
         </footer>
+
+        <ToastContainer />
       </body>
     </html>
   );

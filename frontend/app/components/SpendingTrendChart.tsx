@@ -29,6 +29,8 @@ export default function SpendingTrendChart({ data }: SpendingTrendChartProps) {
         );
     }
 
+    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
     return (
         <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -36,7 +38,7 @@ export default function SpendingTrendChart({ data }: SpendingTrendChartProps) {
             </h3>
             <ResponsiveContainer width="100%" height={300}>
                 <LineChart
-                    data={data}
+                    data={sortedData}
                     margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
@@ -46,6 +48,13 @@ export default function SpendingTrendChart({ data }: SpendingTrendChartProps) {
                         angle={-45}
                         textAnchor="end"
                         height={80}
+                        tickFormatter={(dateString: string) => {
+                            const date = new Date(dateString);
+                            if (isNaN(date.getTime())) return dateString;
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            return `${month}/${day}`;
+                        }}
                     />
                     <YAxis tick={{ fontSize: 12 }} />
                     <Tooltip

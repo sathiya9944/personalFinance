@@ -7,19 +7,18 @@ interface BudgetFormProps {
 }
 
 const CATEGORIES = [
-    'Food',
-    'Transportation',
     'Entertainment',
-    'Utilities',
+    'Food',
     'Health',
+    'Transportation',
     'Shopping',
-    'Education',
+    'Utilities',
     'Other',
 ];
 
 export default function BudgetForm({ onAddBudget }: BudgetFormProps) {
     const [formData, setFormData] = useState({
-        category: 'Food',
+        category: 'Entertainment',
         limit: '',
     });
     const [loading, setLoading] = useState(false);

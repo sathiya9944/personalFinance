@@ -8,18 +8,18 @@ datasource db {
 
 model Transaction {
   id        Int      @id @default(autoincrement())
-  title     String
-  amount    Float
-  type      String
-  category  String
+  title     String   @db.VarChar(255)
+  amount    Decimal  @db.Decimal(10, 2)
+  type      String   @db.VarChar(50)
+  category  String   @db.VarChar(100)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Budget {
-  id       Int    @id @default(autoincrement())
-  category String
-  limit    Float
+  id       Int     @id @default(autoincrement())
+  category String  @db.VarChar(100)
+  limit    Decimal @db.Decimal(10, 2)
   month    Int
   year     Int
   createdAt DateTime @default(now())
